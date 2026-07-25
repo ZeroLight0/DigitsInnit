@@ -9,21 +9,21 @@ frontend  ──▶  backend/api (Express, :5000)  ──▶  backend/ml (FastAP
 
 ## Layout
 
-| Path | Purpose |
-| --- | --- |
-| `app/main.py` | FastAPI app, CORS, startup model preload |
-| `app/config.py` | Paths and limits, all overridable by env var |
-| `app/routes/predict.py` | `/predict/image`, `/predict/drawing`, `/health` |
-| `app/services/predictor.py` | Loads the model once, runs inference |
-| `app/schemas.py` | Response contract shared with the frontend |
-| `preprocessing/image_processor.py` | **The** image pipeline (used by API *and* training) |
-| `preprocessing/utils.py` | Path validation, base64 / data-URL decoding |
-| `preprocessing/visualization.py` | Plot every preprocessing stage for one image |
-| `training/dataset.py` | MNIST loading, cached in `datasets/mnist.npz` |
-| `training/train.py` | Build, train, and save the CNN |
-| `training/evaluate.py` | Test-set report, confusion matrix, single-image check |
-| `training/visualize.py` | Learning curves, sample predictions, mistakes |
-| `scripts/smoke_test.py` | End-to-end check on synthetic "photos" of digits |
+| Path                               | Purpose                                               |
+| ---------------------------------- | ----------------------------------------------------- |
+| `app/main.py`                      | FastAPI app, CORS, startup model preload              |
+| `app/config.py`                    | Paths and limits, all overridable by env var          |
+| `app/routes/predict.py`            | `/predict/image`, `/predict/drawing`, `/health`       |
+| `app/services/predictor.py`        | Loads the model once, runs inference                  |
+| `app/schemas.py`                   | Response contract shared with the frontend            |
+| `preprocessing/image_processor.py` | **The** image pipeline (used by API _and_ training)   |
+| `preprocessing/utils.py`           | Path validation, base64 / data-URL decoding           |
+| `preprocessing/visualization.py`   | Plot every preprocessing stage for one image          |
+| `training/dataset.py`              | MNIST loading, cached in `datasets/mnist.npz`         |
+| `training/train.py`                | Build, train, and save the CNN                        |
+| `training/evaluate.py`             | Test-set report, confusion matrix, single-image check |
+| `training/visualize.py`            | Learning curves, sample predictions, mistakes         |
+| `scripts/smoke_test.py`            | End-to-end check on synthetic "photos" of digits      |
 
 ## Setup
 
@@ -99,17 +99,21 @@ Response:
 `prediction` and `confidence` are the fields the frontend reads
 (`frontend/src/lib/predict-api.ts`) — don't rename them.
 
-| Status | Meaning |
-| --- | --- |
-| 400 | No image sent, or the image/base64 could not be decoded |
-| 413 | Larger than the upload limit (5 MB) |
-| 422 | Decoded fine, but no digit was found (blank canvas) |
-| 503 | `saved_models/mnist_cnn.keras` is missing — train it |
+| Status | Meaning                                                 |
+| ------ | ------------------------------------------------------- |
+| 400    | No image sent, or the image/base64 could not be decoded |
+| 413    | Larger than the upload limit (5 MB)                     |
+| 422    | Decoded fine, but no digit was found (blank canvas)     |
+| 503    | `saved_models/mnist_cnn.keras` is missing — train it    |
 
 ### `GET /health`
 
 ```json
-{ "status": "ok", "model_loaded": true, "model_path": "...\\saved_models\\mnist_cnn.keras" }
+{
+  "status": "ok",
+  "model_loaded": true,
+  "model_path": "...\\saved_models\\mnist_cnn.keras"
+}
 ```
 
 `status` is `degraded` when the model has not loaded.
@@ -135,15 +139,15 @@ usual reason a 99%-accurate model fails on user drawings.
 
 ## Configuration
 
-| Variable | Default |
-| --- | --- |
-| `DIGITWISE_MODEL_PATH` | `saved_models/mnist_cnn.keras` |
-| `DIGITWISE_SAVED_MODELS_DIR` | `saved_models/` |
-| `DIGITWISE_DATASETS_DIR` | `datasets/` |
-| `DIGITWISE_REPORTS_DIR` | `reports/` |
-| `DIGITWISE_MAX_UPLOAD_BYTES` | `5242880` (5 MB) |
-| `DIGITWISE_PRELOAD_MODEL` | `1` |
-| `DIGITWISE_CORS_ORIGINS` | `*` (comma-separated list) |
+| Variable                     | Default                        |
+| ---------------------------- | ------------------------------ |
+| `DIGITWISE_MODEL_PATH`       | `saved_models/mnist_cnn.keras` |
+| `DIGITWISE_SAVED_MODELS_DIR` | `saved_models/`                |
+| `DIGITWISE_DATASETS_DIR`     | `datasets/`                    |
+| `DIGITWISE_REPORTS_DIR`      | `reports/`                     |
+| `DIGITWISE_MAX_UPLOAD_BYTES` | `5242880` (5 MB)               |
+| `DIGITWISE_PRELOAD_MODEL`    | `1`                            |
+| `DIGITWISE_CORS_ORIGINS`     | `*` (comma-separated list)     |
 
 The Node API finds this service via `ML_SERVICE_URL` in `backend/api/.env`
 (default `http://localhost:8000`).
