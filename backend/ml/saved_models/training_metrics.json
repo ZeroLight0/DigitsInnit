@@ -1,0 +1,13 @@
+{
+  "test_loss": 0.027659719809889793,
+  "test_accuracy": 0.9904999732971191,
+  "epochs_run": 10,
+  "epochs_requested": 10,
+  "batch_size": 256,
+  "learning_rate": 0.001,
+  "augmented": false,
+  "seed": 42,
+  "train_samples": 60000,
+  "test_samples": 10000,
+  "model_path": "C:\\G9 project\\DigitWise\\backend\\ml\\saved_models\\mnist_cnn.keras"
+}
