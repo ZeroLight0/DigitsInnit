@@ -18,9 +18,16 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "DigitAI — Handwritten Number Recognition" },
-      { name: "description", content: "Upload or draw a handwritten digit and let DigitAI predict it using machine learning." },
+      {
+        name: "description",
+        content:
+          "Upload or draw a handwritten digit and let DigitAI predict it using machine learning.",
+      },
       { property: "og:title", content: "DigitAI — Handwritten Number Recognition" },
-      { property: "og:description", content: "An elegant AI demo that recognizes handwritten digits 0–9." },
+      {
+        property: "og:description",
+        content: "An elegant AI demo that recognizes handwritten digits 0–9.",
+      },
     ],
   }),
   component: Index,
@@ -38,7 +45,8 @@ function Index() {
   const [result, setResult] = useState<PredictionResponse | null>(null);
 
   useEffect(() => {
-    const seen = typeof window !== "undefined" && window.sessionStorage.getItem("digitai:onboarded");
+    const seen =
+      typeof window !== "undefined" && window.sessionStorage.getItem("digitai:onboarded");
     if (!seen) setOnboardOpen(true);
     const last = typeof window !== "undefined" && window.sessionStorage.getItem(LAST_MODE_KEY);
     if (last === "upload" || last === "draw") setMode(last);
@@ -46,12 +54,16 @@ function Index() {
 
   const closeOnboarding = () => {
     setOnboardOpen(false);
-    try { window.sessionStorage.setItem("digitai:onboarded", "1"); } catch {}
+    try {
+      window.sessionStorage.setItem("digitai:onboarded", "1");
+    } catch {}
   };
 
   const pickMode = (m: "upload" | "draw") => {
     setMode(m);
-    try { window.sessionStorage.setItem(LAST_MODE_KEY, m); } catch {}
+    try {
+      window.sessionStorage.setItem(LAST_MODE_KEY, m);
+    } catch {}
   };
 
   const runPrediction = async (fn: () => Promise<PredictionResponse>) => {
@@ -114,16 +126,26 @@ function Index() {
           </p>
         </motion.section>
 
-        <section className="mt-10 sm:mt-14 pb-12">
+        <section className="mt-10 sm:mt-14 pb-6">
           <AnimatePresence mode="wait">
             {phase === "loading" && (
-              <motion.div key="loader" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <motion.div
+                key="loader"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
                 <PredictionLoader />
               </motion.div>
             )}
 
             {phase === "result" && result && (
-              <motion.div key="result" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <motion.div
+                key="result"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
                 <PredictionResult
                   result={result}
                   onAgain={reset}
@@ -136,13 +158,23 @@ function Index() {
             )}
 
             {phase === "idle" && mode === "select" && (
-              <motion.div key="select" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <motion.div
+                key="select"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
                 <InputMethodSelector onSelect={pickMode} />
               </motion.div>
             )}
 
             {phase === "idle" && mode === "upload" && (
-              <motion.div key="upload" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <motion.div
+                key="upload"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
                 <ModeShell title="Upload an image" onBack={() => setMode("select")}>
                   <ImageUploader onAnalyze={(f) => runPrediction(() => predictFromImage(f))} />
                 </ModeShell>
@@ -150,7 +182,12 @@ function Index() {
             )}
 
             {phase === "idle" && mode === "draw" && (
-              <motion.div key="draw" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <motion.div
+                key="draw"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
                 <ModeShell title="Draw a digit" onBack={() => setMode("select")}>
                   <CanvasBoard onAnalyze={(d) => runPrediction(() => predictFromDrawing(d))} />
                 </ModeShell>
@@ -165,11 +202,24 @@ function Index() {
   );
 }
 
-function ModeShell({ title, onBack, children }: { title: string; onBack: () => void; children: React.ReactNode }) {
+function ModeShell({
+  title,
+  onBack,
+  children,
+}: {
+  title: string;
+  onBack: () => void;
+  children: React.ReactNode;
+}) {
   return (
     <div>
       <div className="max-w-2xl mx-auto mb-5 flex items-center justify-between">
-        <Button variant="ghost" size="sm" className="rounded-xl text-muted-foreground" onClick={onBack}>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="rounded-xl text-muted-foreground"
+          onClick={onBack}
+        >
           <ArrowLeft className="w-4 h-4 mr-1.5" />
           Back
         </Button>
