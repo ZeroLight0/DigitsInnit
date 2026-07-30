@@ -12,7 +12,7 @@ export function Footer() {
         </div>
         <div className="flex items-center gap-2">
           <a
-            href="#"
+            href="https://github.com/ZeroLight0/DigitsInnit"
             aria-label="GitHub"
             className="w-9 h-9 rounded-xl bg-surface border border-border/60 flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-border transition-colors"
           >

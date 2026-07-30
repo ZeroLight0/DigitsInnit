@@ -18,10 +18,12 @@ what makes a model trained on MNIST usable on real-world input:
 9. normalise to [0, 1] and add batch/channel dimensions
 """
 
+import io
 from pathlib import Path
 
 import cv2
 import numpy as np
+from PIL import Image, ImageOps, UnidentifiedImageError
 
 IMAGE_SIZE = 28
 DIGIT_BOX = 20
@@ -107,15 +109,28 @@ def preprocessing_stages(image: np.ndarray) -> dict[str, np.ndarray]:
 
 
 def _decode(data: bytes) -> np.ndarray:
-    buffer = np.frombuffer(data, dtype=np.uint8)
-    # IMREAD_UNCHANGED keeps the alpha channel so transparent canvas exports
-    # can be flattened onto white instead of collapsing to black.
-    image = cv2.imdecode(buffer, cv2.IMREAD_UNCHANGED)
-    if image is None:
+    # Decoding with cv2.IMREAD_UNCHANGED preserves the alpha channel (needed to
+    # flatten transparent canvas exports onto white) but silently ignores EXIF
+    # orientation, unlike IMREAD_COLOR. Phone photos are usually stored in the
+    # camera's raw sensor orientation with an EXIF tag describing the rotation
+    # needed to display them upright, so decoding straight through cv2 leaves
+    # rotated/upside-down uploads exactly as mis-oriented as the raw bytes.
+    # Pillow's exif_transpose corrects that while we still control channel
+    # order, so we decode there and hand cv2 an already-upright array.
+    try:
+        with Image.open(io.BytesIO(data)) as pil_image:
+            pil_image = ImageOps.exif_transpose(pil_image)
+            has_alpha = "A" in pil_image.getbands()
+            pil_image = pil_image.convert("RGBA" if has_alpha else "RGB")
+            array = np.array(pil_image)
+    except (UnidentifiedImageError, OSError, ValueError) as error:
         raise PreprocessingError(
             "Could not decode the image. Supported formats: PNG, JPG, JPEG, WEBP, BMP."
-        )
-    return image
+        ) from error
+
+    if array.shape[2] == 4:
+        return cv2.cvtColor(array, cv2.COLOR_RGBA2BGRA)
+    return cv2.cvtColor(array, cv2.COLOR_RGB2BGR)
 
 
 def _as_uint8(image: np.ndarray) -> np.ndarray:
