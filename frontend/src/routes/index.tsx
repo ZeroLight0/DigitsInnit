@@ -77,7 +77,7 @@ function Index() {
       <Toaster position="top-center" richColors />
       <Onboarding open={onboardOpen} onClose={closeOnboarding} />
 
-      <header className="max-w-6xl w-full mx-auto px-6 pt-7 flex items-center justify-between">
+      <header className="max-w-6xl w-full mx-auto px-6 pt-5 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-xl bg-foreground text-background flex items-center justify-center">
             <Sparkles className="w-4 h-4" />
@@ -95,26 +95,26 @@ function Index() {
         </Button>
       </header>
 
-      <main className="flex-1 max-w-6xl w-full mx-auto px-6 pt-16 sm:pt-24">
+      <main className="flex-1 max-w-6xl w-full mx-auto px-6 pt-10 sm:pt-14">
         <motion.section
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
           className="text-center max-w-3xl mx-auto"
         >
-          <div className="inline-flex items-center gap-1.5 text-xs font-medium text-primary bg-primary/10 px-3 py-1.5 rounded-full mb-6">
+          <div className="inline-flex items-center gap-1.5 text-xs font-medium text-primary bg-primary/10 px-3 py-1.5 rounded-full mb-5">
             <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
             Powered by AI
           </div>
           <h1 className="text-[40px] sm:text-[56px] leading-[1.05] font-bold tracking-tight text-gradient-primary">
             AI Handwritten Digit Recognition
           </h1>
-          <p className="mt-5 text-lg text-muted-foreground max-w-xl mx-auto">
+          <p className="mt-4 text-lg text-muted-foreground max-w-xl mx-auto">
             Upload or draw a handwritten number and let the AI predict which digit it is.
           </p>
         </motion.section>
 
-        <section className="mt-14 sm:mt-20 pb-16">
+        <section className="mt-10 sm:mt-14 pb-12">
           <AnimatePresence mode="wait">
             {phase === "loading" && (
               <motion.div key="loader" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
